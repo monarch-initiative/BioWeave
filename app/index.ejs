@@ -1,0 +1,222 @@
+<!doctype html>
+<html ng-app="app" lang="en" ng-strict-di>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="shortcut icon" href="favicon.ico" />
+
+    <title>BioWeave Demo</title>
+
+    <base href="<%= htmlWebpackPlugin.options.baseUrl %>" />
+  </head>
+
+  <body>
+    <div
+      class="container-fluid"
+      ng-controller="MainController as c">
+
+      <h5>BioWeave Source</h5>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            type="button"
+            class="btn btn-sm btn-default btn-block"
+            ng-model="c.showBWSource"
+            uib-btn-checkbox xbtn-checkbox-true="1" xbtn-checkbox-false="0">
+            BioWeave Source
+          </button>
+
+          <div
+            class="pre-scrollable"
+            ng-if="c.showBWSource">
+            <!--
+              <pre><code ng-bind-html="c.BWSource | highlight | unsafe"></code></pre>
+              -->
+              <pre><code highlight="javascript">{{c.BWSource}}</code></pre>
+          </div>
+        </div>
+      </div>
+
+
+      <h5>BioWeave Intermediates (for debugging, not for users)</h5>
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <button
+            type="button"
+            class="btn btn-sm btn-default btn-block"
+            ng-model="c.showBWGenerator"
+            uib-btn-checkbox xbtn-checkbox-true="1" xbtn-checkbox-false="0">
+            BioWeave Generator
+          </button>
+          <div
+            ng-if="c.showBWGenerator"
+            id="bioweave-pre-il">
+            <pre class="pre-scrollable"><code>{{c.BWGenerator}}</code></pre>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <button
+            type="button"
+            class="btn btn-sm btn-default btn-block"
+            ng-model="c.showBWCompiled"
+            uib-btn-checkbox xbtn-checkbox-true="1" xbtn-checkbox-false="0">
+            BioWeave Compiled Spec (JSON)
+          </button>
+          <div
+            ng-if="c.showBWCompiled"
+            class="whitebox pre-scrollable"
+            id="bioweave-il">
+
+            <json-formatter open="2" json="c.BWCompiled">
+            </json-formatter>
+
+          </div>
+        </div>
+
+      </div>
+
+      <h5>BioWeave Execution</h5>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <button
+            type="button"
+            class="btn btn-sm btn-default btn-block"
+            ng-model="c.showLog"
+            uib-btn-checkbox xbtn-checkbox-true="1" xbtn-checkbox-false="0">
+            Log
+          </button>
+          <div
+            ng-if="c.showLog"
+            class="whitebox pre-scrollable"
+            id="bioweave-pre-il">
+            <div ng-repeat="line in c.log">
+              {{line}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h5>Source DBs</h5>
+      <div
+        ng-repeat="(sourceDBUrl, sourceDB) in c.SourceDBs"
+        class="row">
+        <div class="col-xs-12">
+          <button
+            type="button"
+            class="btn btn-sm btn-default btn-block"
+            ng-model="sourceDB.show"
+            uib-btn-checkbox xbtn-checkbox-true="1" xbtn-checkbox-false="0">
+            {{sourceDB.title}}
+          </button>
+
+          <div
+            ng-if="sourceDB.show">
+            <div
+              class="pre-scrollable">
+
+              <table
+                class="table table-bordered table-compact">
+                <thead>
+                  <th ng-repeat="col in sourceDB.columns">
+                  {{col}}
+                  </th>
+                </thead>
+                <tbody>
+                  <tr
+                    ng-repeat="row in sourceDB.rows">
+                    <td
+                      ng-repeat="col in sourceDB.columns">
+                      {{row[$index]}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+
+      <h5>Target DBs</h5>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            type="button"
+            class="btn btn-sm btn-default btn-block"
+            ng-model="c.showTargetDB"
+            uib-btn-checkbox xbtn-checkbox-true="1" xbtn-checkbox-false="0">
+            {{c.TargetDBTitle}}
+          </button>
+
+          <div
+            ng-if="c.showTargetDB">
+            <div
+              class="pre-scrollable">
+
+              <h6>
+                <a
+                  href="https://www.wikidata.org/wiki/Q4115189"
+                  target="_blank">
+                  Claims for Wikidata Item Sandbox Q4115189
+                </a>
+              </h6>
+
+              <table
+                class="table table-bordered table-compact"
+                style="font-size:0.9em;">
+                <thead>
+                  <th>
+                  Claim ({{c.TargetDBRows.length}})
+                  </th>
+                  <th ng-repeat="col in c.TargetDBColumns">
+                  {{col}}
+                  </th>
+                </thead>
+                <tbody>
+                  <tr
+                    ng-repeat="row in c.TargetDBRows">
+                    <td style="width:200px;min-width:200px;">
+                      <json-formatter
+                        open="0"
+                        json="row.claim">
+                      </json-formatter>
+                    </td>
+                    <td
+                      ng-repeat="col in c.TargetDBColumns">
+                      <ul>
+                        <li ng-repeat="r in row[col]">
+                          <a href="{{r.propertyLink}}" target="_blank">
+                            {{r.property}}
+                          </a>
+                          &rarr;
+                          <a href="{{r.valueLink}}" target="_blank">
+                            {{r.value}}
+                          </a>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </body>
+</html>

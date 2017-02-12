@@ -1,0 +1,38 @@
+// A comment
+
+plan ZFINGeneToWikidata {
+  // This source definition should be loaded from a catalog of common
+  // source defs via:
+  // use ZFINWildTypes
+
+  source ZFINWildTypes {
+    url: './ZFINwildtypes_fish.txt',     // Filepath should be passed as parameter, not hardcoded
+    title: 'Wildtype Lines ',
+    type: 'TSV',
+    skipLines: 2,
+    columns: ['Fish ID', 'Fish Name', 'Fish Abbreviation', 'Genotype ID']
+  }
+
+
+  // This source definition should be loaded from a catalog of common
+  // source defs via:
+  // use ZFINWildTypes
+
+  source ZFINGene {
+    url: './ZFINgene.txt',     // Filepath should be passed as parameter, not hardcoded
+    title: 'ZFIN Marker associations to NCBI Gene data',
+    type: 'TSV',
+    columns: ['ZFIN ID', 'SO ID', 'Symbol', 'NCBI Gene ID']
+  }
+
+
+  //
+  // This WikidataSandbox definition is incomplete, and should properly
+  // contain information about which Wikidata.
+  //
+  target WikidataSandbox {
+    url: 'https://www.wikidata.org/w/api.php',
+    type: 'REST'
+    // Other parameters to specify access to Wikidata API
+  }
+};

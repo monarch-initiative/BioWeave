@@ -1,0 +1,24 @@
+body {
+  background: aliceblue;
+}
+
+pre {
+  font-size: 1em;
+  background: white;
+}
+
+.whitebox {
+  padding: 5px;
+  font-size: 0.9em;
+  background: white;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+table.table-compact tr,
+table.table-compact tr th,
+table.table-compact tr td {
+  margin: 0;
+  padding: 2px;
+  background: lightyellow;
+}
